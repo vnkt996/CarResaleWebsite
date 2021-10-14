@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  - Created by Sai Venkat Banda on 2021.10.02
+  - Copyright © 2021 Sai Venkat Banda. All rights reserved.
+  -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<!-- This page is constructed based on the siteTemplate -->
+<ui:composition template="/template/siteTemplate.xhtml">
+    <ui:define name="title">
+        <!-- Set the page title -->
+        <h:outputText value="Car Logos" />
+    </ui:define>
+
+    <!-- Create the content for this page below -->
+    <ui:define name="editableContent">
+        <div id="posterFrame" align="center" >
+            <h1>Car Brand Logos</h1>
+            <!-- p:contentFlow is a horizontal content gallery component with a slide animation. -->
+            <p:contentFlow value="#{carController.getLogoNames()}" var="aLogoName"
+                           style="width:90%;height:400px;background-color:#F0FFFF">
+
+                <!-- styleClass="content" is defined by PrimeFaces and is required -->
+                <p:graphicImage url="https://manta.cs.vt.edu/csd/carLogos/${aLogoName}.png" styleClass="content" />
+
+                <div class="caption">#{aLogoName}</div>
+            </p:contentFlow>
+        </div>
+    </ui:define>
+</ui:composition>
+</html>
+

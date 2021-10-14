@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  - Created by Sai Venkat Banda on 2021.10.11
+  - Copyright © 2021 Sai Venkat Banda. All rights reserved.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui" xmlns:f="http://java.sun.com/jsf/core">
+
+<ui:composition>
+    <!--
+    ===================================================================
+    |  Clicking the CREATE button in List.xhtml displays this Dialog window for the user to enter the data to create a car. |
+    ===================================================================
+    -->
+    <p:dialog id="CarCreateDlg" header="Create New Car" widgetVar="CarCreateDialog"
+              modal="true" position="center" appendTo="@(body)"
+              showEffect="slide" hideEffect="fade" responsive="true" >
+        <!--
+        Various effect options can be used when showing and closing the dialog.
+        Use showEffect and hideEffect options to apply these effects:
+            blind, bounce, clip, drop, explode, fade, fold, highlight, puff,
+            pulsate, scale, shake, size, slide and transfer. [PrimeFaces Documentation]
+        -->
+
+        <!-- class="ui-datatable-data" in siteStyles reduces row paddings -->
+        <h:form id="CarCreateForm" class="ui-datatable-data">
+            <h:panelGroup id="display">
+                <p:panelGrid columns="2" columnClasses="panelGridColumn1, panelGridColumn2"
+                             rendered="#{carController.selected != null}">
+                    <!--
+                    When the user clicks the CREATE button in List.xhtml, actionListener="#{carController.prepareCreate}"
+                    executes the prepareCreate method in which a new Car object is instantiated and its object reference
+                    is stored in the "selected" instance variable. Thus, "selected" points to a newly created Car object
+                    with property (instance variable) values set to empty or null. The inputText data fields below are
+                    intended to assign user-provided values to the properties of the newly created Car object.
+                    -->
+                    <p:outputLabel value="Make:" for="make" />
+                    <p:inputText id="make" value="#{carController.selected.make}" style="width:300px"
+                                 required="true" requiredMessage="Car Manufacturer name is required."/>
+
+                    <p:outputLabel value="Logo FileName:" for="logoFileName" />
+                    <p:selectOneMenu id="logoFileName" value="#{carController.selected.logoFileName}" style="width:150px"
+                                     required="true" requiredMessage="Car Manufacturer Logo is required.">
+                        <f:selectItems value="#{carController.getCarLogoNamesAsMap}"/>
+                    </p:selectOneMenu>
+
+                    <p:outputLabel value="Model Website URL:" for="makeUrl" />
+                    <p:inputText id="makeUrl" value="#{carController.selected.makeUrl}" style="width:300px"
+                                 required="true" requiredMessage="Car Manufacturer website URL is required."/>
+
+                    <p:outputLabel value="Model:" for="model" />
+                    <p:inputText id="model" value="#{carController.selected.model}" style="width:300px"
+                                 required="true" requiredMessage="Car Model is required."/>
+
+                    <p:outputLabel value="Year:" for="year" />
+                    <p:inputText id="year" value="#{carController.selected.year}" style="width:300px"
+                                 decimalPlaces="0"
+                                 required="true" requiredMessage="Car Manufacturing Year is required."/>
+
+                    <p:outputLabel value="Price:" for="price" />
+                    <p:inputText id="price" value="#{carController.selected.price}" style="width:300px"
+                                 decimalPlaces="2" thousandSeparator=","
+                                 required="true" requiredMessage="Car Price is required."/>
+
+                    <p:outputLabel value="Mileage:" for="mileage" />
+                    <p:inputText id="mileage" value="#{carController.selected.mileage}" style="width:300px"
+                                 decimalPlaces="0"
+                                 required="true" requiredMessage="Car Mileage is required."/>
+
+                    <p:outputLabel value="City MPG:" for="cityMPG" />
+                    <p:inputText id="cityMPG" value="#{carController.selected.cityMPG}" style="width:300px"
+                                 decimalPlaces="0"
+                                 required="true" requiredMessage="Car city MPG is required."/>
+
+                    <p:outputLabel value="Highway MPG:" for="highwayMPG" />
+                    <p:inputText id="highwayMPG" value="#{carController.selected.highwayMPG}" style="width:300px"
+                                 decimalPlaces="0"
+                                 required="true" requiredMessage="Car Highway MPG is required."/>
+
+                    <p:outputLabel value="Engine Type:" for="engineType" />
+                    <p:inputText id="engineType" value="#{carController.selected.engineType}" style="width:300px"
+                                 required="true" requiredMessage="Car engine type is required."/>
+
+                    <p:outputLabel value="Drive Type:" for="driveType" />
+                    <p:inputText id="driveType" value="#{carController.selected.driveType}" style="width:300px"
+                                 required="true" requiredMessage="Car drive type is required."/>
+
+                </p:panelGrid>
+            </h:panelGroup>
+
+            <h:panelGroup>
+                <br />
+                <div align="center">
+                    <!-- SAVE button -->
+                    <p:commandButton value="Save" icon="fas fa-save" styleClass="rounded-button"
+                                     ajax="false" actionListener="#{carController.create()}"
+                                     update="display,:CarListForm:datalist,:growlInfoMessage,:growlWarningMessage,:growlErrorMessage,:growlFatalMessage"
+                                     oncomplete="handleSubmit(args,'CarCreateDialog');" />
+                    &nbsp;
+                    <!--
+                    CANCEL button: Call the cancel() method immediately without first rendering this JSF page.
+                    The cancel() method will make the selected car object null and show the List page.
+                    -->
+                    <p:commandButton value="Cancel" icon="fas fa-ban" styleClass="ui-button-outlined"
+                                     action="#{carController.cancel()}" ajax="false" immediate="true"
+                                     onclick="PF('CarCreateDialog').hide()" />
+                </div>
+            </h:panelGroup>
+        </h:form>
+    </p:dialog>
+</ui:composition>
+</html>

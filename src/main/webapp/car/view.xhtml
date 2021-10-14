@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  - Created by Sai Venkat Banda on 2021.10.11
+  - Copyright © 2021 Sai Venkat Banda. All rights reserved.
+  -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+<ui:composition>
+    <!--
+    ==========================================================
+    Clicking the VIEW button in List.xhtml displays this Dialog window showing the selected car's data.
+    ==========================================================
+    -->
+    <p:dialog id="CarViewDlg" header="#{carController.selected.model}" widgetVar="CarViewDialog"
+              modal="true" position="center" appendTo="@(body)"
+              showEffect="slide" hideEffect="fade" responsive="true" >
+        <!--
+        Various effect options can be used when showing and closing the dialog.
+        Use showEffect and hideEffect options to apply these effects:
+            blind, bounce, clip, drop, explode, fade, fold, highlight, puff,
+            pulsate, scale, shake, size, slide and transfer. [PrimeFaces Documentation]
+        -->
+        <h:form id="CarViewForm" class="ui-datatable-data">
+            <div align="center">
+                <!-- Display the selected car's flag image -->
+                <img src="https://manta.cs.vt.edu/csd/carLogos/#{carController.selected.logoFileName}.png"
+                     alt="Car Logo" width="200" />
+                <br /><br />
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" columnClasses="panelGridColumn1, panelGridColumn2"
+                                 rendered="#{carController.selected != null}">
+
+                        <h:outputText value="make :"/>
+                        <h:outputText value="#{carController.selected.make}"/>
+
+                        <h:outputText value="model :"/>
+                        <h:outputText value="#{carController.selected.model}"/>
+
+                        <h:outputText value="year :"/>
+                        <h:outputText value="#{carController.selected.year}" >
+                        </h:outputText>
+
+                        <h:outputText value="price :"/>
+                        <h:outputText value="#{carController.selected.price}" >
+                            <f:convertNumber type="number" groupingUsed="true" />
+                        </h:outputText>
+
+                        <h:outputText value="mileage :"/>
+                        <h:outputText value="#{carController.selected.mileage}" >
+                            <f:convertNumber type="number" groupingUsed="true" />
+                        </h:outputText>
+
+                        <h:outputText value="city MPG :"/>
+                        <h:outputText value="#{carController.selected.cityMPG}" >
+                            <f:convertNumber type="number" groupingUsed="true" />
+                        </h:outputText>
+
+                        <h:outputText value="highway MPG :"/>
+                        <h:outputText value="#{carController.selected.highwayMPG}" >
+                            <f:convertNumber type="number" groupingUsed="true" />
+                        </h:outputText>
+
+                        <h:outputText value="engine Type :"/>
+                        <h:outputText value="#{carController.selected.engineType}"/>
+
+                        <h:outputText value="drive Type :"/>
+                        <h:outputText value="#{carController.selected.driveType}"/>
+                    </p:panelGrid>
+                </h:panelGroup>
+                <br />
+                <h:panelGroup>
+                    <!-- CLOSE button -->
+                    <p:commandButton value="Close" icon="fas fa-window-close" styleClass="ui-button-outlined"
+                                     onclick="PF('CarViewDialog').hide()" />
+                </h:panelGroup>
+            </div>
+        </h:form>
+    </p:dialog>
+</ui:composition>
+</html>
+

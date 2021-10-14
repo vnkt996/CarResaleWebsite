@@ -1,0 +1,370 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  - Created by Sai Venkat Banda on 2021.10.11
+  - Copyright © 2021 Sai Venkat Banda. All rights reserved.
+  -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+<!-- This page is constructed based on the siteTemplate -->
+<ui:composition template="/template/siteTemplate.xhtml">
+
+    <ui:define name="title">
+        <!-- Set the page title -->
+        <h:outputText value="Database Search" />
+    </ui:define>
+
+    <!-- Create the content for this page below -->
+    <ui:define name="editableContent">
+
+        <h:form id="DatabaseSearchForm">
+            <div align="center">
+                <h:graphicImage value="#{resource['images:searchDatabase.png']}"
+                                style="width: 150px" />
+                <h1>Database Search</h1>
+                <br />
+                <table width="80%" border="1" align="center" cellpadding="5" cellspacing="0">
+                    <tbody>
+                    <tr>
+                        <th width="60" nowrap="nowrap" scope="col">Type</th>
+                        <th scope="col">Description</th>
+                        <th width="200" scope="col">Search</th>
+                    </tr>
+                    <tr>
+                        <td width="60" align="center" nowrap="nowrap">1</td>
+                        <td align="center">Search car make, model, engine type, or drive type individually or search in each</td>
+                        <td width="200" align="center">
+                            <p:commandButton value="Search Type 1" icon="fas fa-search" styleClass="rounded-button"
+                                             update=":DBSearchDlg1" oncomplete="PF('DBSearchDialog1').show()" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="60" align="center" nowrap="nowrap">2</td>
+                        <td align="center">Car year is BETWEEN minYearQ ans maxYearQ</td>
+                        <td width="200" align="center">
+                            <p:commandButton value="Search Type 2" icon="fas fa-search" styleClass="rounded-button"
+                                             update=":DBSearchDlg2" oncomplete="PF('DBSearchDialog2').show()" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="60" align="center" nowrap="nowrap">3</td>
+                        <td align="center">Car mileage is BETWEEN minMileageQ and maxMileageQ</td>
+                        <td width="200" align="center">
+                            <p:commandButton value="Search Type 3" icon="fas fa-search" styleClass="rounded-button"
+                                             update=":DBSearchDlg3" oncomplete="PF('DBSearchDialog3').show()" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="60" align="center" nowrap="nowrap">4</td>
+                        <td align="center">Car year ≥ yearQ AND mileage ≤ mileageQ</td>
+                        <td width="200" align="center">
+                            <p:commandButton value="Search Type 4" icon="fas fa-search" styleClass="rounded-button"
+                                             update=":DBSearchDlg4" oncomplete="PF('DBSearchDialog4').show()" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="60" align="center" nowrap="nowrap">5</td>
+                        <td align="center">Car year ≥ yearQ AND cityMpg ≥ cityMpgQ AND mileage is BETWEEN minMileageQ and maxMileageQ</td>
+                        <td width="200" align="center">
+                            <p:commandButton value="Search Type 5" icon="fas fa-search" styleClass="rounded-button"
+                                             update=":DBSearchDlg5" oncomplete="PF('DBSearchDialog5').show()" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="60" align="center" nowrap="nowrap">6</td>
+                        <td align="center">Car mileage ≤ mileageQ AND cityMpg ≥ cityMpgQ AND driveType CONTAINS driveTypeQ AND year is BETWEEN minYearQ and maxYearQ</td>
+                        <td width="200" align="center">
+                            <p:commandButton value="Search Type 6" icon="fas fa-search" styleClass="rounded-button"
+                                             update=":DBSearchDlg6" oncomplete="PF('DBSearchDialog6').show()" />
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <br />
+            </div>
+        </h:form>
+
+        <!--
+        **************************************
+        Dialog pop-up window for Type 1 Search
+        **************************************
+        -->
+        <p:dialog id="DBSearchDlg1" header="Search Database" widgetVar="DBSearchDialog1"
+                  modal="true" position="center" appendTo="@(body)"
+                  showEffect="slide" hideEffect="fade" responsive="true" >
+
+            <h:form id="CarSearchForm1">
+                <p:panel>
+                    <h:panelGrid columns="4">
+                        <h:outputLabel value="Search: "/>
+                        <!-- Search string is entered here. -->
+                        <p:inputText id="searchString" value="#{carController.searchString}"
+                                     required="true" requiredMessage="Please enter a search string!"
+                                     placeholder="Enter search string" >
+                            <f:validateLength minimum="1" />
+                        </p:inputText>
+                        &nbsp;
+                        <!-- Search category is selected here. -->
+                        <p:selectOneMenu id="searchField" value="#{carController.searchField}"
+                                         required="true" requiredMessage="Please select a category!" >
+
+                            <f:selectItem itemLabel="Select Category" itemValue="" noSelectionOption="true"/>
+                            <f:selectItem itemLabel="All" itemValue="all"/>
+                            <f:selectItem itemLabel="Make" itemValue="Make"/>
+                            <f:selectItem itemLabel="Model" itemValue="Model"/>
+                            <f:selectItem itemLabel="Engine Type" itemValue="Engine Type"/>
+                            <f:selectItem itemLabel="Drive Type" itemValue="Drive Type"/>
+
+                        </p:selectOneMenu>
+
+                    </h:panelGrid>
+                    <h:panelGroup>
+                        <br /><br />
+                        <div align="center">
+                            <!-- SUBMIT button -->
+                            <p:commandButton value="Submit" icon="fas fa-arrow-up" styleClass="rounded-button"
+                                             ajax="false" action="#{carController.search(1)}" />
+                            &nbsp;
+                            <!-- CANCEL button -->
+                            <p:commandButton value="Cancel" icon="fas fa-ban" styleClass="ui-button-outlined"
+                                             onclick="PF('DBSearchDialog1').hide()"/>
+                        </div>
+                    </h:panelGroup>
+                </p:panel>
+            </h:form>
+        </p:dialog>
+
+        <!--
+        **************************************
+        Dialog pop-up window for Type 2 Search
+        **************************************
+        Car Year is between minYearQ and maxYearQ
+        -->
+        <p:dialog id="DBSearchDlg2" header="Database Search Type 2" widgetVar="DBSearchDialog2"
+                  modal="true" position="center" appendTo="@(body)"
+                  showEffect="slide" hideEffect="fade" responsive="true" >
+
+            <h:form id="SearchForm2">
+                <p:panel>
+                    <h:panelGroup>
+                        <p:panelGrid columns="2" columnClasses="panelGridColumn1, panelGridColumn2" >
+                            <h:outputLabel value="Minimum Year " for="minYearQ"/>
+                            <p:inputNumber id="minYearQ" value="#{carController.minYearQ}"
+                                           decimalPlaces="0" thousandSeparator=""
+                                           required="true" requiredMessage="Minimum Year is required!"/>
+
+                            <h:outputLabel value="Maximum Year " for="maxYearQ"/>
+                            <p:inputNumber id="maxYearQ" value="#{carController.maxYearQ}"
+                                           decimalPlaces="0" thousandSeparator=""
+                                           required="true" requiredMessage="Maximum Year is required!"/>
+                        </p:panelGrid>
+                    </h:panelGroup>
+
+                    <h:panelGroup>
+                        <br/><br/>
+                        <div align="center">
+                            <!-- SUBMIT button -->
+                            <p:commandButton value="Submit" icon="fas fa-arrow-up" styleClass="rounded-button"
+                                             ajax="false" action="#{carController.search(2)}"/>
+                            &nbsp;
+                            <!-- CANCEL button -->
+                            <p:commandButton value="Cancel" icon="fas fa-ban" styleClass="ui-button-outlined"
+                                             onclick="PF('DBSearchDialog2').hide()"/>
+                        </div>
+                    </h:panelGroup>
+                </p:panel>
+            </h:form>
+        </p:dialog>
+
+        <!--
+        **************************************
+        Dialog pop-up window for Type 3 Search
+        **************************************
+        Car Mileage is between Minimum Mileage and Maximum Mileage
+        -->
+        <p:dialog id="DBSearchDlg3" header="Database Search Type 3" widgetVar="DBSearchDialog3"
+                  modal="true" position="center" appendTo="@(body)"
+                  showEffect="slide" hideEffect="fade" responsive="true" >
+
+            <h:form id="SearchForm3">
+                <p:panel>
+                    <h:panelGroup>
+                        <p:panelGrid columns="2" columnClasses="panelGridColumn1, panelGridColumn2" >
+                            <h:outputLabel value="Car Minimum Mileage " for="minMileageQ"/>
+                            <p:inputNumber id="minMileageQ" value="#{carController.minMileageQ}"
+                                           decimalPlaces="0" thousandSeparator=","
+                                           required="true" requiredMessage="Minimum Mileage is required!"/>
+
+                            <h:outputLabel value="Car Maximum Total Mileage " for="maxMileageQ"/>
+                            <p:inputNumber id="maxMileageQ" value="#{carController.maxMileageQ}"
+                                           decimalPlaces="0" thousandSeparator=","
+                                           required="true" requiredMessage="Maximum Mileage is required!"/>
+                        </p:panelGrid>
+                    </h:panelGroup>
+                    <h:panelGroup>
+                        <br/><br/>
+                        <div align="center">
+                            <!-- SUBMIT button -->
+                            <p:commandButton value="Submit" icon="fas fa-arrow-up" styleClass="rounded-button"
+                                             ajax="false" action="#{carController.search(3)}"/>
+                            &nbsp;
+                            <!-- CANCEL button -->
+                            <p:commandButton value="Cancel" icon="fas fa-ban" styleClass="ui-button-outlined"
+                                             onclick="PF('DBSearchDialog3').hide()"/>
+                        </div>
+                    </h:panelGroup>
+                </p:panel>
+            </h:form>
+        </p:dialog>
+
+        <!--
+        **************************************
+        Dialog pop-up window for Type 4 Search
+        **************************************
+        car model year >= minYearQ mileage <= maxMileageQ
+        -->
+        <p:dialog id="DBSearchDlg4" header="Database Search Type 4" widgetVar="DBSearchDialog4"
+                  modal="true" position="center" appendTo="@(body)"
+                  showEffect="slide" hideEffect="fade" responsive="true" >
+
+            <h:form id="SearchForm4">
+                <p:panel>
+                    <h:panelGroup>
+                        <p:panelGrid columns="2" columnClasses="panelGridColumn1, panelGridColumn2" >
+                            <h:outputLabel value="Model Year (min)" for="minYearQ4"/>
+                            <p:inputNumber id="minYearQ4" value="#{carController.minYearQ}"
+                                           decimalPlaces="0" thousandSeparator=""
+                                         required="true" requiredMessage="minYear is required!"/>
+
+                            <h:outputLabel value="max milage; " for="maxMileageQ4" />
+                            <p:inputNumber id="maxMileageQ4" value="#{carController.maxMileageQ}"
+                                           decimalPlaces="0" thousandSeparator=","
+                                           required="true" requiredMessage="maxMileage is required!"/>
+                        </p:panelGrid>
+                    </h:panelGroup>
+                    <h:panelGroup>
+                        <br/><br/>
+                        <div align="center">
+                            <!-- SUBMIT button -->
+                            <p:commandButton value="Submit" icon="fas fa-arrow-up" styleClass="rounded-button"
+                                             ajax="false" action="#{carController.search(4)}"/>
+                            &nbsp;
+                            <!-- CANCEL button -->
+                            <p:commandButton value="Cancel" icon="fas fa-ban" styleClass="ui-button-outlined"
+                                             onclick="PF('DBSearchDialog4').hide()"/>
+                        </div>
+                    </h:panelGroup>
+                </p:panel>
+            </h:form>
+        </p:dialog>
+
+        <!--
+        **************************************
+        Dialog pop-up window for Type 5 Search
+        **************************************
+        -->
+        <p:dialog id="DBSearchDlg5" header="Database Search Type 5" widgetVar="DBSearchDialog5"
+                  modal="true" position="center" appendTo="@(body)"
+                  showEffect="slide" hideEffect="fade" responsive="true" >
+
+            <h:form id="SearchForm5">
+                <p:panel>
+                    <h:panelGroup>
+                        <p:panelGrid columns="2" columnClasses="panelGridColumn1, panelGridColumn2" >
+                            <h:outputLabel value="Model Year " for="minYearQ5"/>
+                            <p:inputNumber id="minYearQ5" value="#{carController.minYearQ}"
+                                           decimalPlaces="0" thousandSeparator=""
+                                         required="true" requiredMessage="min year is required!"/>
+
+                            <h:outputLabel value="min city mpg " for="minCityMPGQ" />
+                            <p:inputNumber id="minCityMPGQ" value="#{carController.minCityMPGQ}"
+                                           decimalPlaces="0" thousandSeparator=","
+                                           required="true" requiredMessage="minCityMPGQ is required!"/>
+
+                            <h:outputLabel value="min Mileage " for="minMileageQ5"/>
+                            <p:inputText id="minMileageQ5" value="#{carController.minMileageQ}"
+                                         required="true" requiredMessage="min Mileage is required!"/>
+
+                            <h:outputLabel value="max Mileage " for="maxMileageQ5" />
+                            <p:inputNumber id="maxMileageQ5" value="#{carController.maxMileageQ}"
+                                           decimalPlaces="0" thousandSeparator=","
+                                           required="true" requiredMessage="max Mileage is required!"/>
+                        </p:panelGrid>
+                    </h:panelGroup>
+                    <h:panelGroup>
+                        <br/><br/>
+                        <div align="center">
+                            <!-- SUBMIT button -->
+                            <p:commandButton value="Submit" icon="fas fa-arrow-up" styleClass="rounded-button"
+                                             ajax="false" action="#{carController.search(5)}"/>
+                            &nbsp;
+                            <!-- CANCEL button -->
+                            <p:commandButton value="Cancel" icon="fas fa-ban" styleClass="ui-button-outlined"
+                                             onclick="PF('DBSearchDialog5').hide()"/>
+                        </div>
+                    </h:panelGroup>
+                </p:panel>
+            </h:form>
+        </p:dialog>
+
+        <!--
+        **************************************
+        Dialog pop-up window for Type 6 Search
+        **************************************
+        -->
+        <p:dialog id="DBSearchDlg6" header="Database Search Type 6" widgetVar="DBSearchDialog6"
+                  modal="true" position="center" appendTo="@(body)"
+                  showEffect="slide" hideEffect="fade" responsive="true" >
+
+            <h:form id="SearchForm6">
+                <p:panel>
+                    <h:panelGroup>
+                        <p:panelGrid columns="2" columnClasses="panelGridColumn1, panelGridColumn2" >
+                            <h:outputLabel value="max Mileage " for="maxMileageQ6"/>
+                            <p:inputNumber id="maxMileageQ6" value="#{carController.maxMileageQ}"
+                                         decimalPlaces="0" thousandSeparator=","
+                                         required="true" requiredMessage="max Mileage is required!"/>
+
+                            <h:outputLabel value="Minimum city MPG " for="minCityMPGQ6"/>
+                            <p:inputNumber id="minCityMPGQ6" value="#{carController.minCityMPGQ}"
+                                           decimalPlaces="0" thousandSeparator=","
+                                           required="true" requiredMessage="Minimum city MPG is required!"/>
+
+                            <h:outputLabel value="drive Type contains " for="driveTypeQ" />
+                            <p:inputText id="driveTypeQ" value="#{carController.driveTypeQ}"
+                                           required="true" requiredMessage="drive Type is required!"/>
+
+                            <h:outputLabel value="min Year " for="minYearQ6"/>
+                            <p:inputNumber id="minYearQ6" value="#{carController.minYearQ}"
+                                           decimalPlaces="0" thousandSeparator=""
+                                         required="true" requiredMessage="Minimum Year is required!"/>
+
+                            <h:outputLabel value="max Year " for="maxYearQ6"/>
+                            <p:inputNumber id="maxYearQ6" value="#{carController.maxYearQ}"
+                                           decimalPlaces="0" thousandSeparator=""
+                                           required="true" requiredMessage="Maximum Year is required!"/>
+                        </p:panelGrid>
+                    </h:panelGroup>
+                    <h:panelGroup>
+                        <br/><br/>
+                        <div align="center">
+                            <!-- SUBMIT button -->
+                            <p:commandButton value="Submit" icon="fas fa-arrow-up" styleClass="rounded-button"
+                                             ajax="false" action="#{carController.search(6)}"/>
+                            &nbsp;
+                            <!-- CANCEL button -->
+                            <p:commandButton value="Cancel" icon="fas fa-ban" styleClass="ui-button-outlined"
+                                             onclick="PF('DBSearchDialog6').hide()"/>
+                        </div>
+                    </h:panelGroup>
+                </p:panel>
+            </h:form>
+        </p:dialog>
+    </ui:define>
+</ui:composition>
+</html>
+

@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  - Created by Sai Venkat Banda on 2021.10.11
+  - Copyright © 2021 Sai Venkat Banda. All rights reserved.
+  -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+<!-- This page is constructed based on the siteTemplate -->
+<ui:composition template="/template/siteTemplate.xhtml">
+    <ui:define name="title">
+        <!-- Set the page title -->
+        <h:outputText value="Database Search Results" />
+    </ui:define>
+
+    <!-- Create the content for this page below -->
+    <ui:define name="editableContent">
+
+        <!-- In case of JSF validation error, set 'selected' to null in carController -->
+        <c:if test="#{facesContext.validationFailed}">
+            ${carController.unselect()}
+        </c:if>
+
+        <!-- Set 'selected' to null in carController when the user refreshes / reloads this JSF page -->
+        <f:metadata>
+            <f:viewAction action="#{carController.unselect()}" rendered="#{facesContext.postback}" />
+        </f:metadata>
+
+        <div align="center">
+            <h:form id="CountryListForm">
+                <p:panel header="Database Search Results">
+                    <p:dataTable id="datalist"
+                                 value="#{carController.searchItems}"
+                                 var="aCar"
+                                 widgetVar="carsDataTable"
+                                 selectionMode="single"
+                                 selection="#{carController.selected}"
+                                 reflow="true"
+                                 showGridlines="true"
+                                 paginator="true"
+                                 rowKey="#{aCar.id}"
+                                 rows="5"
+                                 rowsPerPageTemplate="5,10,20,30,50,70,90">
+
+                        <p:ajax event="rowSelect"   update="viewButton"/>
+                        <p:ajax event="rowUnselect" update="viewButton"/>
+
+                        <!--
+                        *********************
+                        *    Car Logo   *
+                        *********************
+                        -->
+                        <p:column headerText="Logo" style="vertical-align: top">
+                            <p:graphicImage url="https://manta.cs.vt.edu/csd/carLogos/#{aCar.logoFileName}.png" style="height: 50px" />
+                        </p:column>
+
+                        <!--
+                        *********************
+                        *    Car Make Name  *
+                        *********************
+                        -->
+                        <p:column headerText="Make" style="width: 50px; text-align: center; vertical-align: top">
+                            <a href="#{aCar.makeUrl}" style="color: blue" target="_blank">
+                                <h:outputText value="#{aCar.make}"/>
+                            </a>
+                        </p:column>
+
+                        <!--
+                        ******************************
+                        *    Car Model Name   *
+                        ******************************
+                        -->
+                        <p:column headerText="Code" sortBy="#{aCar.model}" style="width: 80px; text-align: center; vertical-align: top">
+                            <h:outputText value="#{aCar.model}"/>
+                        </p:column>
+
+                        <!--
+                        ***************************
+                        *    Year   *
+                        ***************************
+                        -->
+                        <p:column headerText="Year" sortBy="#{aCar.year}"
+                                  style="text-align: right; vertical-align: top">
+                            <h:outputText value="#{aCar.year}">
+                            </h:outputText>
+                        </p:column>
+
+                        <!--
+                        *********************
+                        *    Price   *
+                        *********************
+                        -->
+                        <p:column headerText="Price" sortBy="#{aCar.price}"
+                                  style="vertical-align: top">
+                            <h:outputText value="#{aCar.price}"/>
+                        </p:column>
+
+                        <!--
+                        ***************************
+                        *    Milage   *
+                        ***************************
+                        -->
+                        <p:column headerText="Mileage" sortBy="#{aCar.mileage}"
+                                  style="text-align: right; vertical-align: top">
+                            <h:outputText value="#{aCar.mileage}">
+                                <!-- Insert commas into total area number as thousands separators -->
+                                <f:convertNumber type="number" groupingUsed="true" />
+                            </h:outputText>
+                        </p:column>
+
+                        <!--
+                        ******************************
+                        *    City MPG   *
+                        ******************************
+                        -->
+                        <p:column headerText="City MPG" sortBy="#{aCar.cityMPG}"
+                                  style="vertical-align: top">
+                            <h:outputText value="#{aCar.cityMPG}"/>
+                        </p:column>
+
+                        <!--
+                        *************************
+                        *    Hwy MPG            *
+                        *************************
+                        -->
+                        <p:column headerText="Hwy MPG" sortBy="#{aCar.highwayMPG}"
+                                  style="vertical-align: top">
+                            <h:outputText value="#{aCar.highwayMPG}"/>
+                        </p:column>
+
+                        <!--
+                        ******************************
+                        *    Engine Type             *
+                        ******************************
+                        -->
+                        <p:column headerText="Engine Type" sortBy="#{aCar.engineType}" style="vertical-align: top">
+                            <h:outputText value="#{aCar.engineType}"/>
+                        </p:column>
+
+                        <!--
+                        *************************
+                        *    Drive Type         *
+                        *************************
+                        -->
+                        <p:column headerText="Drive Type" sortBy="#{aCar.driveType}"
+                                  style="vertical-align: top">
+                            <h:outputText value="#{aCar.driveType}"/>
+                        </p:column>
+
+                        <!--
+                        *************************
+                        *   Data Table Footer   *
+                        *************************
+                        -->
+                        <f:facet name="footer">
+                            <div align="center">
+                                <!-- VIEW button: id is used since it is referenced to be activated or deactivated -->
+                                <p:commandButton id="viewButton" value="View" icon="fas fa-eye" styleClass="rounded-button"
+                                                 update=":CarViewDlg" oncomplete="PF('CarViewDialog').show()"
+                                                 disabled="#{empty carController.selected}"/>
+                                &nbsp;
+                                <!-- GO BACK button -->
+                                <p:button id="backButton" icon="fas fa-arrow-left" styleClass="ui-button-outlined"
+                                          outcome="/databaseSearch/databaseSearch" value="Go Back"/>
+                            </div>
+                        </f:facet>
+                    </p:dataTable>
+                </p:panel>
+            </h:form>
+        </div>
+
+        <!--
+        Clicking the View button displays the included
+        View.xhtml file in a dialog window on top of this page.
+        -->
+        <ui:include src="/car/view.xhtml"/>
+    </ui:define>
+</ui:composition>
+</html>
